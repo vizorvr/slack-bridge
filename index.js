@@ -66,10 +66,10 @@ function VizorSlackBot() {
 					if (data.channel !== channelId)
 						return;
 
-					if (shouldDrop(data.text))
+					if (exports.shouldDrop(data.text))
 						return;
 
-					var text = filterText(data.text)
+					var text = exports.filterText(data.text)
 
 					console.log('IN:', userMap[data.user], data)
 
