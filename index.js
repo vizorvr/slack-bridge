@@ -1,5 +1,4 @@
-
-const channelName = process.env.CHANNEL || 'editor-chat'
+const CHANNEL = process.env.CHANNEL || 'editor-chat'
 const SlackBot = require('slackbots')
 const redis = require('redis')
 const SerialNumber = require('redis-serial')
@@ -10,14 +9,13 @@ function createRedisClient() {
 	})
 }
 
-function shouldDrop(text) {
-	return !!text.match(/.*\<@\S+\|\S+\>.*/)
+exports.shouldDrop = function shouldDrop(text) {
+	return !!text.match(/\<@\S+\|\S+\>/)
 }
 
-function filterText(text) {
+exports.filterText = function filterText(text) {
 	return text.replace(/[\<\>]+/g, '')
 }
-
 
 function VizorSlackBot() {
 	var that = this
@@ -44,10 +42,18 @@ function VizorSlackBot() {
 	
 	this._bot.once('start', function() {
 		var userMap = {}
+		var channelId
 
 		that._bot.getUsers().then(function(users) {
 			users.members.forEach(function(user) {
 				userMap[user.id] = user.name
+			})
+		})
+
+		that._bot.getChannels().then(function(channels) {
+			channels.channels.map(function(channel) {
+				if (channel.name === CHANNEL)
+					channelId = channel.id
 			})
 		})
 
@@ -57,18 +63,21 @@ function VizorSlackBot() {
 					if (data.bot_id)
 						return;
 
+					if (data.channel !== channelId)
+						return;
+
 					if (shouldDrop(data.text))
 						return;
 
 					var text = filterText(data.text)
 
-					console.log('IN:', userMap[data.user], text)
+					console.log('IN:', userMap[data.user], data)
 
 					that.postToVizor(userMap[data.user], text)
 					break;
 
 				case 'hello':
-					that.postToSlack('Hi everyone, I\'m back!')
+					that.postToSlack('I\'ve been reloaded!')
 					break;
 
 				default:
@@ -129,7 +138,7 @@ VizorSlackBot.prototype.postToVizor = function(asUserName, text) {
 VizorSlackBot.prototype.postToSlack = function(text) {
 	console.log('OUT:', text)
 
-	return this._bot.postTo(channelName, text)
+	return this._bot.postTo(CHANNEL, text)
 		.fail(this.close.bind(this))
 }
 

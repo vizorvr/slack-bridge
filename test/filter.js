@@ -1,12 +1,7 @@
 var assert = require('assert')
 
-function shouldDrop(text) {
-	return !!text.match(/.*\<@\S+\|\S+\>.*/)
-}
-
-function filterText(text) {
-	return text.replace(/[\<\>]+/g, '')
-}
+var shouldDrop = require('../index').shouldDrop
+var filterText = require('../index').filterText
 
 describe('Filter', function() {
 	it('should drop', function() {
