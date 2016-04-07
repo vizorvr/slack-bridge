@@ -10,6 +10,15 @@ function createRedisClient() {
 	})
 }
 
+function shouldDrop(text) {
+	return !!text.match(/.*\<@\S+\|\S+\>.*/)
+}
+
+function filterText(text) {
+	return text.replace(/[\<\>]+/g, '')
+}
+
+
 function VizorSlackBot() {
 	var that = this
 
@@ -48,16 +57,14 @@ function VizorSlackBot() {
 					if (data.bot_id)
 						return;
 
-					if (data.text.indexOf('has joined the channel') !== -1 ||
-						data.text.indexOf('has left the channel') !== -1 ||
-						data.text.indexOf('has joined the group') !== -1 ||
-						data.text.indexOf('has left the group') !== -1) {
+					if (shouldDrop(data.text))
 						return;
-					}
 
-					console.log('IN:', userMap[data.user], data.text)
+					var text = filterText(data.text)
 
-					that.postToVizor(userMap[data.user], data.text)
+					console.log('IN:', userMap[data.user], text)
+
+					that.postToVizor(userMap[data.user], text)
 					break;
 
 				case 'hello':
