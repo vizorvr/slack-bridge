@@ -1,5 +1,5 @@
 
-const channelName = 'editor-chat'
+const channelName = process.env.CHANNEL || 'editor-chat'
 const SlackBot = require('slackbots')
 const redis = require('redis')
 const SerialNumber = require('redis-serial')
@@ -48,6 +48,13 @@ function VizorSlackBot() {
 					if (data.bot_id)
 						return;
 
+					if (data.text.indexOf('has joined the channel') ||
+						data.text.indexOf('has left the channel') ||
+						data.text.indexOf('has joined the group') ||
+						data.text.indexOf('has left the group')) {
+						return;
+					}
+
 					console.log('IN:', userMap[data.user], data.text)
 
 					that.postToVizor(userMap[data.user], data.text)
@@ -61,7 +68,7 @@ function VizorSlackBot() {
 					if (data.type === 'user_typing')
 						return;
 
-					console.log('INFO', userMap[data.user], data.type)
+					console.log('INFO', userMap[data.user], data.type, data)
 
 					break;
 			}
