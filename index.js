@@ -48,10 +48,10 @@ function VizorSlackBot() {
 					if (data.bot_id)
 						return;
 
-					if (data.text.indexOf('has joined the channel') ||
-						data.text.indexOf('has left the channel') ||
-						data.text.indexOf('has joined the group') ||
-						data.text.indexOf('has left the group')) {
+					if (data.text.indexOf('has joined the channel') !== -1 ||
+						data.text.indexOf('has left the channel') !== -1 ||
+						data.text.indexOf('has joined the group') !== -1 ||
+						data.text.indexOf('has left the group') !== -1) {
 						return;
 					}
 
