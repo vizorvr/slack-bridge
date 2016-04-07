@@ -12,7 +12,7 @@
     "url": "https://github.com/vizorvr/slack-bridge.git"
   },
   "author": "jaakko@vizor.io",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/vizorvr/slack-bridge/issues"
   },
