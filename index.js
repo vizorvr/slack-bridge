@@ -1,5 +1,5 @@
 
-const channelName = 'editor-chat-dev'
+const channelName = 'editor-chat'
 const SlackBot = require('slackbots')
 const redis = require('redis')
 const SerialNumber = require('redis-serial')
