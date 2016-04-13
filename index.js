@@ -39,6 +39,11 @@ function VizorSlackBot() {
 		token: process.env.SLACKBOT_TOKEN,
 		name: 'Vizor'
 	})
+
+	this._bot.on('close', function() {
+		that.close()
+		process.exit(1)
+	})
 	
 	this._bot.once('start', function() {
 		var userMap = {}
